@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    header {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
+
+    .balance-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .balance-box h2 {
+      font-size: 16px;
+      color: #777;
+      margin-bottom: 8px;
+    }
+
+    .balance-box .amount {
+      font-size: 36px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .summary {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-box {
+      flex: 1;
+      background-color: white;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .summary-box h3 {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 6px;
+    }
+
+    .income-amount {
+      font-size: 22px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .expense-amount {
+      font-size: 22px;
+      font-weight: bold;
+      color: #e74c3c;
+    }
+
+    .form-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .form-box h2 {
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .form-box input,
+    .form-box select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    .form-box button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .form-box button:hover {
+      background-color: #45a049;
+    }
+
+    .error-msg {
+      color: red;
+      font-size: 13px;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    .list-box {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .list-box h2 {
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .transaction-item:last-child {
+      border-bottom: none;
+    }
+
+    .tx-left .tx-name {
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    .tx-left .tx-info {
+      font-size: 12px;
+      color: #777;
+      margin-top: 3px;
+    }
+
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tx-amount-income {
+      color: #4CAF50;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .tx-amount-expense {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .empty-msg {
+      text-align: center;
+      color: #aaa;
+      padding: 20px 0;
+    }
+
+    @media (max-width: 480px) {
+      .summary {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div style="font-size: 32px; font-weight: bold; letter-spacing: 2px;">Ledger</div>
+    <div style="font-size: 15px; font-weight: normal; margin-top: 4px; opacity: 0.85;">💰 Personal Expense Tracker</div>
+  </header>
+
+  <div class="container">
+
+    <!-- Balance -->
+    <div class="balance-box">
+      <h2>Current Balance</h2>
+      <div class="amount" id="balance">$0.00</div>
+    </div>
+
+    <!-- Income & Expense Summary -->
+    <div class="summary">
+      <div class="summary-box">
+        <h3>Income</h3>
+        <div class="income-amount" id="totalIncome">$0.00</div>
+      </div>
+      <div class="summary-box">
+        <h3>Expenses</h3>
+        <div class="expense-amount" id="totalExpense">$0.00</div>
+      </div>
+    </div>
+
+    <!-- Add Transaction Form -->
+    <div class="form-box">
+      <h2>Add Transaction</h2>
+      <p class="error-msg" id="errorMsg">Please fill in all fields correctly.</p>
+
+      <input type="text" id="description" placeholder="Description (e.g. Groceries)" />
+
+      <input type="number" id="amount" placeholder="Amount (e.g. 50)" min="0.01" />
+
+      <select id="type">
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+
+      <!-- Date field -->
+      <input type="date" id="date" />
+
+      <button onclick="addTransaction()">Add Transaction</button>
+    </div>
+
+    <!-- Transaction List -->
+    <div class="list-box">
+      <h2>Transactions</h2>
+      <div id="transactionList">
+        <p class="empty-msg">No transactions yet. Add one above!</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Array to store all transactions
+    var transactions = [];
+
+    // Set today's date as the default value when the page loads
+    window.onload = function() {
+      var today = new Date();
+      var year = today.getFullYear();
+      var month = today.getMonth() + 1;
+      var day = today.getDate();
+
+      // Make sure month and day are always 2 digits (e.g. 05 not 5)
+      if (month < 10) { month = "0" + month; }
+      if (day < 10)   { day = "0" + day; }
+
+      document.getElementById("date").value = year + "-" + month + "-" + day;
+    }
+
+    // Function to add a transaction
+    function addTransaction() {
+      var description = document.getElementById("description").value;
+      var amount      = parseFloat(document.getElementById("amount").value);
+      var type        = document.getElementById("type").value;
+      var date        = document.getElementById("date").value;
+      var errorMsg    = document.getElementById("errorMsg");
+
+      // Validation — all fields must be filled
+      if (description === "" || isNaN(amount) || amount <= 0 || date === "") {
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      errorMsg.style.display = "none";
+
+      // Create the transaction object (now includes date)
+      var transaction = {
+        id: Date.now(),
+        description: description,
+        amount: amount,
+        type: type,
+        date: date
+      };
+
+      transactions.push(transaction);
+
+      // Clear form inputs
+      document.getElementById("description").value = "";
+      document.getElementById("amount").value = "";
+
+      // Refresh the page display
+      updateSummary();
+      displayTransactions();
+    }
+
+    // Function to delete a transaction
+    function deleteTransaction(id) {
+      for (var i = 0; i < transactions.length; i++) {
+        if (transactions[i].id === id) {
+          transactions.splice(i, 1);
+          break;
+        }
+      }
+      updateSummary();
+      displayTransactions();
+    }
+
+    // Function to format the date from "2025-05-26" to "May 26, 2025"
+    function formatDate(dateStr) {
+      var months = ["January","February","March","April","May","June",
+                    "July","August","September","October","November","December"];
+
+      var parts = dateStr.split("-");
+      var year  = parts[0];
+      var month = parseInt(parts[1]) - 1; // months array starts at 0
+      var day   = parseInt(parts[2]);
+
+      return months[month] + " " + day + ", " + year;
+    }
+
+    // Function to update the balance, income, and expense totals
+    function updateSummary() {
+      var totalIncome  = 0;
+      var totalExpense = 0;
+
+      for (var i = 0; i < transactions.length; i++) {
+        if (transactions[i].type === "income") {
+          totalIncome = totalIncome + transactions[i].amount;
+        } else {
+          totalExpense = totalExpense + transactions[i].amount;
+        }
+      }
+
+      var balance = totalIncome - totalExpense;
+
+      document.getElementById("balance").textContent     = "$" + balance.toFixed(2);
+      document.getElementById("totalIncome").textContent  = "$" + totalIncome.toFixed(2);
+      document.getElementById("totalExpense").textContent = "$" + totalExpense.toFixed(2);
+
+      if (balance < 0) {
+        document.getElementById("balance").style.color = "#e74c3c";
+      } else {
+        document.getElementById("balance").style.color = "#4CAF50";
+      }
+    }
+
+    // Function to display all transactions on the page
+    function displayTransactions() {
+      var listDiv = document.getElementById("transactionList");
+
+      if (transactions.length === 0) {
+        listDiv.innerHTML = '<p class="empty-msg">No transactions yet. Add one above!</p>';
+        return;
+      }
+
+      var html = "";
+
+      for (var i = 0; i < transactions.length; i++) {
+        var tx = transactions[i];
+
+        var amountClass = "";
+        var sign = "";
+        if (tx.type === "income") {
+          amountClass = "tx-amount-income";
+          sign = "+";
+        } else {
+          amountClass = "tx-amount-expense";
+          sign = "-";
+        }
+
+        html += '<div class="transaction-item">';
+        html += '  <div class="tx-left">';
+        html += '    <div class="tx-name">' + tx.description + '</div>';
+        html += '    <div class="tx-info">' + tx.type + ' &bull; ' + formatDate(tx.date) + '</div>';
+        html += '  </div>';
+        html += '  <div class="tx-right">';
+        html += '    <span class="' + amountClass + '">' + sign + '$' + tx.amount.toFixed(2) + '</span>';
+        html += '    <button class="delete-btn" onclick="deleteTransaction(' + tx.id + ')">Delete</button>';
+        html += '  </div>';
+        html += '</div>';
+      }
+
+      listDiv.innerHTML = html;
+    }
+  </script>
+
+</body>
+</html>
